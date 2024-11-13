@@ -2,31 +2,57 @@ package com.campusdual.classroom;
 
 import com.campusdual.util.Utils;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Scanner;
 
 public class Exercise32 {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
+        String textoPrueba = generateStringToSave(null);
+        printToFile(textoPrueba);
+
 
     }
 
+
+
     public static String generateStringToSave(String string) {
+        if (string!=null){
+            return string;
+        }else{
+            return generateUserInputToSave();
+        }
 
     }
 
     private static String generateUserInputToSave(){
-        StringBuilder sb = new StringBuilder();
-        System.out.println("Escribe debajo el texto que quieras. Pulsa \"ENTER\" 2 veces seguidas para finalizar:");
-        String string;
-        while(!(string = Utils.string()).isEmpty()){
-            sb.append(string).append(System.lineSeparator());
-        }
-        return sb.toString();
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Introduce el texto a guardar: ");
+        return scanner.nextLine();
     }
 
     public static void printToFile(String string) {
+            //DEFINICION: RUTA DE ARCHIVO
+        Path filePath = Paths.get("src/main/resources/data.txt");
+        File file = filePath.toFile();
+
+        //VERIFICACION--> existe la carpeta resources?
+        File parentDirectory= file.getParentFile();
+
+        if (!parentDirectory.exists()){
+            parentDirectory.mkdirs();
+        }
+            //BUFFEREDWRITER--> ESCRIBIR CONTENIDO EN LA CADENA DEL ARCHIVO
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.toFile())))
+            {
+                writer.write(string); //ESCRIBE TODA LA CADENA SIN MODIFICAR LOS SALTOS DE LINEA
+        } catch (IOException e){
+            System.err.println("Error al escribir en el archivo: " + e.getMessage());
+        }
 
     }
 
